@@ -3,8 +3,17 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 **/src/main/**/build/
 **/src/test/**/build/
-
-### STS ###
+pom.xml
+/target/
+.gradletasknamecache
+/build
+buildSrc/build
+/spring-*/build
+/framework-bom/build
+/framework-docs/build
+/integration-tests/build
+/src/asciidoc/build
+spring-test/test-output/
 .apt_generated
 .classpath
 .factorypath
@@ -15,8 +24,6 @@ build/
 bin/
 **/src/main/**/bin/
 **/src/test/**/bin/
-
-### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
@@ -24,14 +31,29 @@ bin/
 out/
 **/src/main/**/out/
 **/src/test/**/out/
-
-### NetBeans ###
+out
+test-output
+atlassian-ide-plugin.xml
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-
-### VS Code ###
+bin
+spring-*/src/main/java/META-INF/MANIFEST.MF
 .vscode/
 /.idea/
+*.java.hsp
+*.sonarj
+*.sw*
+.DS_Store
+build.sh
+integration-repo
+ivy-cache
+argfile*
+activemq-data/
+classes/
+jxl.log
+jmx.log
+derby.log
+cached-antora-playbook.yml
