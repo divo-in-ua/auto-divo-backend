@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "divo-in-ua.auto"
-version = "0.0.1"
+version = "1"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
