@@ -18,6 +18,9 @@ jobs:
           distribution: 'corretto'
           java-version: '17'
 
+      - run: ./gradlew build
+        name: Build with Gradle
+
       - uses: actions/checkout@v4
         name: Build the Docker Image
       - run: docker build . --file Dockerfile --tag divo-auto:$(date +%s)
