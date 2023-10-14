@@ -1,1 +1,1 @@
-rootProject.name = "Divo2023"
+rootProject.name = "divo-auto"

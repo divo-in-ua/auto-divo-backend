@@ -7,7 +7,7 @@ plugins {
     kotlin("plugin.spring") version "1.8.22" // Kotlin Spring compiler plugin for adding the open modifier to Kotlin classes in order to make them compatible with Spring Framework features
 }
 
-group = "ua.in.divo"
+group = "divo-in-ua.auto"
 version = "0.0.1"
 
 java {
@@ -19,12 +19,10 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin") // Jackson's extensions for Kotlin for working with JSON
     implementation("org.jetbrains.kotlin:kotlin-reflect") // Kotlin's reflection library, required for working with Spring
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-    runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
