@@ -5,7 +5,7 @@
 `./gradlew build`
 
 ##### Build JAR, Docker Image, Upload to Docker Hub
-run `./scripts/build-and-upload.sh`
+run `./scripts/build-and-upload.sh --branch STAGING --token YOUR_DOCKER_HUB_ACCESS_TOKEN`
 
 ##### Build the Docker Image (e.g. _docker build -t "UsernameInDockerHub/RepositoryName:BuildTag" ._):
 `docker build -t divoinua/auto-backend:0.0.1 .`
