@@ -32,7 +32,6 @@ fi
 
 if docker login -u divoinua -p "$DOCKER_HUB_ACCESS_TOKEN"; then
   echo "Login successful!"
-  timestamp=$(date +'%Y%m%d%H%M%S') # Set timestamp
 
   # Fetch the latest updates for the specified Git branch
   git fetch origin "$branch"
@@ -42,8 +41,8 @@ if docker login -u divoinua -p "$DOCKER_HUB_ACCESS_TOKEN"; then
 
   # Build the JAR using Gradle, Build the Docker Container, Push it to the Docker Hub, logout
   ./gradlew build \
-    && docker build -t "divoinua/auto-backend:$timestamp" . \
-    && docker push divoinua/auto-backend:$timestamp \
+    && docker build -t "divoinua/auto-backend:latest" . \
+    && docker push divoinua/auto-backend:latest \
     && docker logout \
     && echo "Image built and pushed successfully."
 
