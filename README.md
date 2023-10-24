@@ -18,6 +18,13 @@ with timestamp:
 ##### Run the Docker Container:
 ` docker run -p 8080:8080 divo-auto:latest `
 
+or run with config file (DEVELOPMENT/PRODUCTION)
+
+`docker run --name divo-backend \
+-v /path-to-external/config/application-production.properties:/app/config/application-production.properties \
+-e SPRING_PROFILES_ACTIVE=production \
+-p 8080:8080 --rm divoinua/auto-backend:latest`
+
 ##### Upload Docker Container to DockerGub
 login `docker login -u divoinua -p YOUR_ACCESS_TOKEN`
 build `./gradlew build && docker build -t "divoinua/auto-backend:latest" .`
