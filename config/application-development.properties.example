@@ -1,0 +1,4 @@
+# Example Api Configuration
+api.client-id=1111AAA
+api.url=2222VVV
+api.key=production
