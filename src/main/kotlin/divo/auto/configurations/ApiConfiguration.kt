@@ -1,4 +1,4 @@
-package divo.auto
+package divo.auto.configurations
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 

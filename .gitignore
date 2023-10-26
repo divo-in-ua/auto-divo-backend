@@ -59,3 +59,4 @@ derby.log
 cached-antora-playbook.yml
 # Ignore Spring configuration files
 /config/*.properties
+/config/.*
