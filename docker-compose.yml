@@ -41,6 +41,16 @@ services:
     networks:
       - divo-network
 
+  frontend:
+    image: divoinua/auto-frontend:latest
+    container_name: frontend
+    depends_on:
+      - spring-app
+    ports:
+      - "4200:80" # open in browser http://localhost:4200
+    networks:
+      - divo-network
+
 networks:
   divo-network:
 
