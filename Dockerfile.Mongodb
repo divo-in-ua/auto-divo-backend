@@ -1,0 +1,24 @@
+# build custom image from file: docker build -t divoinua/mongodb:latest -f Dockerfile.Mongodb .
+# run custom image: docker run -p 27017:27017 --name MONGODB --rm divoinua/mongodb:latest
+
+# The official MongoDB image as the base image
+FROM mongo:latest
+
+# MongoDB client tools, which include the mongosh shell
+RUN apt-get update && apt-get install -y mongodb-org-tools
+
+# The script initializes MongoDB with the custom settings, including creating a user and a database.
+RUN echo '#!/bin/bash' >> /docker-entrypoint-initdb.d/init-mongodb.sh
+RUN echo 'mongosh admin --host localhost --port 27017 --eval "db = db.getSiblingDB(\"myDatabaseName\"); db.createUser({ user: \"myUserName\", pwd: \"myUserPassword\", roles: [{ role: \"readWrite\", db: \"myDatabaseName\" }] });"' >> /docker-entrypoint-initdb.d/init-mongodb.sh
+
+# Make the script executable
+RUN chmod +x /docker-entrypoint-initdb.d/init-mongodb.sh
+
+# Expose the default MongoDB port
+EXPOSE 27017
+
+# Define a sharable volume
+VOLUME ["/data/db"]
+
+# Set the container's default command for start the MongoDB server
+CMD ["mongod", "--bind_ip_all", "--auth", "--port", "27017"]
