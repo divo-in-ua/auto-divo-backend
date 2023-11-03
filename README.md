@@ -32,8 +32,8 @@ push `docker push divoinua/auto-backend:latest`
 logout `docker logout`
 
 ##### Running dedicated MongoDB container
-build `docker build -t divoinua/mongodb:latest -f Dockerfile.Mongodb .`
-run `docker run -p 27017:27017 --name MONGODB -e MONGO_INITDB_ROOT_USERNAME=mongorootuser -e MONGO_INITDB_ROOT_PASSWORD=mongorootpassword --rm divoinua/mongodb:latest`
+build `docker build -t divoinua/auto-mongodb:latest -f Dockerfile.Mongodb .`
+run `docker run -p 27017:27017 -v divo-auto-mongodb-data:/data/db --name MONGODB -e MONGO_INITDB_ROOT_USERNAME=mongorootuser -e MONGO_INITDB_ROOT_PASSWORD=mongorootpassword --rm divoinua/auto-mongodb:latest`
 connect to SHELL into the running container `docker exec -it MONGODB /bin/bash` 
 connect to database inside container `mongosh admin --host localhost --port 27017 -u your_root_user -p your_root_password --authenticationDatabase admin`
 switch to inner database `db = db.getSiblingDB("divo")`

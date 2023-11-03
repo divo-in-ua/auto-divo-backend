@@ -55,6 +55,7 @@ networks:
 
 volumes:
   mongodb-data:
+    name: divo-auto-mongodb-data
 
 secrets:
   mongodb_root_password:
