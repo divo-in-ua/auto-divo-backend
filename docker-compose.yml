@@ -2,12 +2,13 @@ version: '3.5'
 
 services:
   mongodb:
-    image: mongo:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.Mongodb
+    image: "divoinua/auto-mongodb"
     secrets:
       - mongodb_root_password
       - mongodb_root_username
-      - mongodb_password
-      - mongodb_username
     container_name: mongodb
     ports:
       - "27017:27017"
@@ -15,19 +16,17 @@ services:
       MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongodb_root_password
       MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/mongodb_root_username
       MONGO_INITDB_DATABASE: admin
-      MONGO_DATABASE: divo
-      MONGO_USERNAME_FILE: /run/secrets/mongodb_username
-      MONGO_PASSWORD_FILE: /run/secrets/mongodb_password
     volumes:
       - mongodb-data:/data/db
     networks:
-      - divo-network
+      - DIVONET
 
   spring-app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: backend
+    image: "divoinua/auto-backend"
     ports:
       - "8080:8080"
     depends_on:
@@ -39,7 +38,7 @@ services:
     volumes:
       - ./config:/config
     networks:
-      - divo-network
+      - DIVONET
 
   frontend:
     image: divoinua/auto-frontend:latest
@@ -49,10 +48,10 @@ services:
     ports:
       - "4200:80" # open in browser http://localhost:4200
     networks:
-      - divo-network
+      - DIVONET
 
 networks:
-  divo-network:
+  DIVONET:
 
 volumes:
   mongodb-data:
@@ -62,7 +61,3 @@ secrets:
     file: ./config/.mongodb_root_password
   mongodb_root_username:
     file: ./config/.mongodb_root_username
-  mongodb_password:
-    file: ./config/.mongodb_password
-  mongodb_username:
-    file: ./config/.mongodb_username

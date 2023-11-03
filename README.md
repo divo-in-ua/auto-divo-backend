@@ -33,9 +33,9 @@ logout `docker logout`
 
 ##### Running dedicated MongoDB container
 build `docker build -t divoinua/mongodb:latest -f Dockerfile.Mongodb .`
-run `docker run -p 27017:27017 --name MONGODB -e MONGO_INITDB_ROOT_USERNAME=your_root_user -e MONGO_INITDB_ROOT_PASSWORD=your_root_password --rm divoinua/mongodb:latest`
+run `docker run -p 27017:27017 --name MONGODB -e MONGO_INITDB_ROOT_USERNAME=mongorootuser -e MONGO_INITDB_ROOT_PASSWORD=mongorootpassword --rm divoinua/mongodb:latest`
 connect to SHELL into the running container `docker exec -it MONGODB /bin/bash` 
 connect to database inside container `mongosh admin --host localhost --port 27017 -u your_root_user -p your_root_password --authenticationDatabase admin`
 switch to inner database `db = db.getSiblingDB("divo")`
-create first collection `db.createCollection("access_tokens")`
-create first accessToken `db.access_tokens.insertOne({ token: "tokentest" })`
+create first collection `db.createCollection("accessTokens")`
+create first accessToken `db.accessTokens.insertOne({ token: "tokentest" })`
