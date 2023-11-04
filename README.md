@@ -39,3 +39,7 @@ connect to database inside container `mongosh admin --host localhost --port 2701
 switch to inner database `db = db.getSiblingDB("divo")`
 create first collection `db.createCollection("accessTokens")`
 create first accessToken `db.accessTokens.insertOne({ token: "tokentest" })`
+
+or 
+
+just run `docker-compose -f docker-compose-mongodb.yml up`

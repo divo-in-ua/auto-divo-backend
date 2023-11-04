@@ -1,0 +1,35 @@
+version: '3.5'
+
+services:
+  mongodb:
+    build:
+      context: .
+      dockerfile: Dockerfile.Mongodb
+    image: "divoinua/auto-mongodb"
+    secrets:
+      - mongodb_root_password
+      - mongodb_root_username
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongodb_root_password
+      MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/mongodb_root_username
+      MONGO_INITDB_DATABASE: admin
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - DIVONET
+
+networks:
+  DIVONET:
+
+volumes:
+  mongodb-data:
+    name: divo-auto-mongodb-data
+
+secrets:
+  mongodb_root_password:
+    file: ./config/.mongodb_root_password
+  mongodb_root_username:
+    file: ./config/.mongodb_root_username
