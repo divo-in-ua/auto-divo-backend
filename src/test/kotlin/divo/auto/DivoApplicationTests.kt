@@ -9,7 +9,7 @@ import org.springframework.test.web.servlet.MockMvc
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ApplicationTests {
+class DivoApplicationTests {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
