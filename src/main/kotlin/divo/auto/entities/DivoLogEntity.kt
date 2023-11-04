@@ -9,7 +9,8 @@ import java.util.Date
 data class DivoLogEntity(
     @Id
     val id: String? = null,
-    val data: String? = null,
+    val level: String? = null,
+    val message: String? = null,
     @CreatedDate
     val createdAt: Date? = null,
 )

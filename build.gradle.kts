@@ -36,4 +36,5 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools:3.1.5")
     testImplementation("org.springframework.boot:spring-boot-starter-test:3.1.5")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb:3.1.5")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 }

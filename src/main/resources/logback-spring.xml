@@ -1,0 +1,14 @@
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <logger name="org.springframework.web" level="DEBUG"/>
+
+    <appender name="MONGODB" class="divo.auto.utils.logs.DivoLogAppender">
+        <!-- Configure the MongoDB appender settings if needed -->
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="MONGODB"/>
+    </root>
+</configuration>
