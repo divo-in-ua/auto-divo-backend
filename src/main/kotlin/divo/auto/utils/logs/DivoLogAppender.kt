@@ -17,7 +17,7 @@ import java.io.FileInputStream
 import java.io.IOException
 import java.util.*
 
-private const val PRODUCTION_PROP = "./config/application-production.properties"
+private const val PRODUCTION_PROP = "/app/config/application-production.properties"
 private const val DEVELOPMENT_PROP = "./config/application-development.properties"
 private const val DATABASE_PROP_NAME = "spring.data.mongodb.database"
 private const val DATABASE_PROP_HOST = "spring.data.mongodb.host"
