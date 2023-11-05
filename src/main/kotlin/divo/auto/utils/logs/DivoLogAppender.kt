@@ -17,8 +17,10 @@ import java.io.FileInputStream
 import java.io.IOException
 import java.util.*
 
-private const val PRODUCTION_PROP = "/app/config/application-production.properties"
+private const val PRODUCTION_PROP = "./config/application-production.properties"
 private const val DEVELOPMENT_PROP = "./config/application-development.properties"
+private const val DOCKER_DEVELOPMENT_PROP = "/app/config/application-development.properties"
+private const val DOCKER_PRODUCTION_PROP = "/app/config/application-production.properties"
 private const val DATABASE_PROP_NAME = "spring.data.mongodb.database"
 private const val DATABASE_PROP_HOST = "spring.data.mongodb.host"
 private const val DATABASE_PROP_PORT = "spring.data.mongodb.port"
@@ -30,6 +32,8 @@ class DivoLogAppender: AppenderBase<ILoggingEvent>() {
     @Volatile private var collection: MongoCollection<Document>? = null
     private val propertiesProduction: Properties = loadPropertiesFromFile(PRODUCTION_PROP)
     private val propertiesDevelopment: Properties = loadPropertiesFromFile(DEVELOPMENT_PROP)
+    private val propertiesDevDocker: Properties = loadPropertiesFromFile(DOCKER_DEVELOPMENT_PROP)
+    private val propertiesProdDocker: Properties = loadPropertiesFromFile(DOCKER_PRODUCTION_PROP)
 
     companion object {
         @JvmStatic
@@ -90,8 +94,10 @@ class DivoLogAppender: AppenderBase<ILoggingEvent>() {
 
     private fun getProperty(key: String): String {
         return try {
-            val devProp = propertiesDevelopment.getProperty(key, "")
-            propertiesProduction.getProperty(key, devProp)
+            val propertyDevDocker = propertiesDevDocker.getProperty(key, "")
+            val devProp = propertiesDevelopment.getProperty(key, propertyDevDocker)
+            val propertyProdDocker = propertiesProdDocker.getProperty(key, devProp)
+            propertiesProduction.getProperty(key, propertyProdDocker)
         } catch (e: Throwable) {
             e.printStackTrace()
             ""
