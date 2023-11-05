@@ -2,7 +2,7 @@
 `./gradlew bootRun`
 
 ##### Build project as an JAR:
-`./gradlew build`
+`./gradlew build -x test`
 
 ##### Build JAR, Docker Image, Upload to Docker Hub
 run `./scripts/build-and-upload.sh --branch PRODUCTION --token YOUR_DOCKER_HUB_ACCESS_TOKEN`
@@ -11,9 +11,9 @@ run `./scripts/build-and-upload.sh --branch PRODUCTION --token YOUR_DOCKER_HUB_A
 `docker build -t divoinua/auto-backend:latest .`
 
 ##### Build JAR and Docker the same time:
-with manual tag: `./gradlew build && docker build -t divoinua/auto-backend:latest .`
+with manual tag: `./gradlew build -x test && docker build -t divoinua/auto-backend:latest .`
 with timestamp: 
-`./gradlew build && docker build -t "divoinua/auto-backend:$(date +'%Y%m%d%H%M%S')" .`
+`./gradlew build -x test && docker build -t "divoinua/auto-backend:$(date +'%Y%m%d%H%M%S')" .`
 
 ##### Run the Docker Container:
 ` docker run -p 8080:8080 divo-auto:latest `
@@ -27,7 +27,7 @@ or run with config file (DEVELOPMENT/PRODUCTION)
 
 ##### Upload Docker Container to DockerGub
 login `docker login -u divoinua -p YOUR_ACCESS_TOKEN`
-build `./gradlew build && docker build -t "divoinua/auto-backend:latest" .`
+build `./gradlew build -x test && docker build -t "divoinua/auto-backend:latest" .`
 push `docker push divoinua/auto-backend:latest`
 logout `docker logout`
 
