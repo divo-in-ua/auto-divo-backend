@@ -34,9 +34,9 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: development
       SPRING_CONFIG_NAME: application-development
-      SPRING_CONFIG_ADDITIONAL_LOCATION: /config/
+      SPRING_CONFIG_ADDITIONAL_LOCATION: /app/config/
     volumes:
-      - ./config:/config
+      - ./config:/app/config
     networks:
       - DIVONET
 
