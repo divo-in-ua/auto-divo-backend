@@ -8,6 +8,7 @@ import com.mongodb.ServerAddress
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
 import com.mongodb.client.MongoCollection
+import divo.auto.entities.DivoLogEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,42 +18,63 @@ import java.io.FileInputStream
 import java.io.IOException
 import java.util.*
 
-private const val PRODUCTION_PROP = "./config/application-production.properties"
-private const val DEVELOPMENT_PROP = "./config/application-development.properties"
-private const val DOCKER_DEVELOPMENT_PROP = "/app/config/application-development.properties"
-private const val DOCKER_PRODUCTION_PROP = "/app/config/application-production.properties"
 private const val DATABASE_PROP_NAME = "spring.data.mongodb.database"
 private const val DATABASE_PROP_HOST = "spring.data.mongodb.host"
 private const val DATABASE_PROP_PORT = "spring.data.mongodb.port"
 private const val DATABASE_PROP_USER_NAME = "spring.data.mongodb.userName"
 private const val DATABASE_PROP_USER_PASSWORD = "spring.data.mongodb.password"
 private const val COLLECTION_NAME = "springLogs"
+
+/**
+ * The `DivoLogAppender` class is a Logback appender that logs events to a MongoDB collection.
+ * It handles database initialization, event logging, and property loading from multiple paths.
+ */
 class DivoLogAppender: AppenderBase<ILoggingEvent>() {
     @Volatile private var mongoClient: MongoClient? = null
     @Volatile private var collection: MongoCollection<Document>? = null
-    private val propertiesProduction: Properties = loadPropertiesFromFile(PRODUCTION_PROP)
-    private val propertiesDevelopment: Properties = loadPropertiesFromFile(DEVELOPMENT_PROP)
-    private val propertiesDevDocker: Properties = loadPropertiesFromFile(DOCKER_DEVELOPMENT_PROP)
-    private val propertiesProdDocker: Properties = loadPropertiesFromFile(DOCKER_PRODUCTION_PROP)
+
+    private val propertiesList = loadProperties()
 
     companion object {
-        @JvmStatic
+        /**
+         * Loads properties from multiple configuration file paths.
+         */
+        private fun loadProperties(): List<Properties> {
+            val paths = arrayListOf(
+                "./config/application-production.properties",
+                "./config/application-development.properties",
+                "/app/config/application-development.properties",
+                "/app/config/application-production.properties",
+            )
+            return paths.map { loadPropertiesFromFile(it) }
+        }
+
+        /**
+         * Loads properties from a file.
+         */
         private fun loadPropertiesFromFile(path: String): Properties {
             val properties = Properties()
             try {
                 FileInputStream(path).use { inputStream -> properties.load(inputStream) }
-            } catch (_: IOException) { }
+            } catch (ex: IOException) {
+                ex.message
+            }
             return properties
         }
     }
+
+    /**
+     * Appends the log event to the MongoDB collection.
+     */
     override fun append(event: ILoggingEvent?) {
         initDatabaseIfStillNotCreated()
         CoroutineScope(Dispatchers.IO).launch {
-            val logData = Document()
-            logData.append("level", event?.level.toString())
-            logData.append("message", event?.formattedMessage)
-            logData.append("createdAt", Date(event?.timeStamp ?: 0))
             runCatching {
+                val logData: Document = DivoLogEntity(
+                    level = event?.level.toString(),
+                    message = event?.formattedMessage,
+                    createdAt = Date(event?.timeStamp ?: 0)
+                ).convertToDocument()
                 collection?.insertOne(logData)
             }.onFailure {
                 it.printStackTrace()
@@ -60,6 +82,9 @@ class DivoLogAppender: AppenderBase<ILoggingEvent>() {
         }
     }
 
+    /**
+     * Initializes the database and the MongoDB client if not already created.
+     */
     private fun initDatabaseIfStillNotCreated() {
         if (mongoClient == null) {
             runBlocking {
@@ -70,6 +95,9 @@ class DivoLogAppender: AppenderBase<ILoggingEvent>() {
         }
     }
 
+    /**
+     * Creates and configures the MongoDB client.
+     */
     private fun createMongoClient(): MongoClient {
         val port = Integer.parseInt(getProperty(DATABASE_PROP_PORT))
         val serverAddress = ServerAddress(getProperty(DATABASE_PROP_HOST), port)
@@ -92,15 +120,20 @@ class DivoLogAppender: AppenderBase<ILoggingEvent>() {
         return MongoClients.create(settings)
     }
 
+    /**
+     * Retrieves a property from the loaded properties list.
+     *
+     * @param key The property key to retrieve.
+     * @return The property value, or an empty string if the property is not found.
+     */
     private fun getProperty(key: String): String {
-        return try {
-            val propertyDevDocker = propertiesDevDocker.getProperty(key, "")
-            val devProp = propertiesDevelopment.getProperty(key, propertyDevDocker)
-            val propertyProdDocker = propertiesProdDocker.getProperty(key, devProp)
-            propertiesProduction.getProperty(key, propertyProdDocker)
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            ""
+        var result = "" // default value
+        propertiesList.forEach {
+            val propertyValue = it.getProperty(key, "")
+            if (!propertyValue.isNullOrBlank()) {
+                result = propertyValue
+            }
         }
+        return result
     }
 }

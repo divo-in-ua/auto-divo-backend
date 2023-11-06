@@ -2,8 +2,8 @@
 api.client-id=1111AAA
 api.url=2222VVV
 api.key=production
-spring.data.mongodb.host=mongodb-host
-spring.data.mongodb.port=mongodb-port
+spring.data.mongodb.host= mongodb (as a container name) OR localhost, depends from your type running
+spring.data.mongodb.port=mongodb-port, usually is 27017
 spring.data.mongodb.database=mongodb-database
 spring.data.mongodb.userName=mongodb-user-name
 spring.data.mongodb.password=mongodb-password
