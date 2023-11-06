@@ -9,10 +9,7 @@ import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
 import com.mongodb.client.MongoCollection
 import divo.auto.entities.DivoLogEntity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.bson.Document
 import java.io.FileInputStream
 import java.io.IOException
@@ -30,9 +27,7 @@ private const val COLLECTION_NAME = "springLogs"
  * It handles database initialization, event logging, and property loading from multiple paths.
  */
 class DivoLogAppender: AppenderBase<ILoggingEvent>() {
-    @Volatile private var mongoClient: MongoClient? = null
     @Volatile private var collection: MongoCollection<Document>? = null
-
     private val propertiesList = loadProperties()
 
     companion object {
@@ -61,38 +56,47 @@ class DivoLogAppender: AppenderBase<ILoggingEvent>() {
             }
             return properties
         }
+
+        fun getCollectionName(): String {
+            return COLLECTION_NAME
+        }
     }
 
     /**
      * Appends the log event to the MongoDB collection.
      */
     override fun append(event: ILoggingEvent?) {
-        initDatabaseIfStillNotCreated()
+        if (event == null) return
+
+        if (collection == null) {
+            collection = initCollection()
+        }
+
         CoroutineScope(Dispatchers.IO).launch {
             runCatching {
-                val logData: Document = DivoLogEntity(
-                    level = event?.level.toString(),
-                    message = event?.formattedMessage,
-                    createdAt = Date(event?.timeStamp ?: 0)
-                ).convertToDocument()
-                collection?.insertOne(logData)
+                saveEvent(event)
             }.onFailure {
                 it.printStackTrace()
             }
         }
     }
 
+    fun saveEvent(event: ILoggingEvent) {
+        val logData: Document = DivoLogEntity(
+            level = event.level.toString(),
+            message = event.formattedMessage,
+            createdAt = Date(event.timeStamp)
+        ).convertToDocument()
+        collection?.insertOne(logData)
+    }
+
     /**
      * Initializes the database and the MongoDB client if not already created.
      */
-    private fun initDatabaseIfStillNotCreated() {
-        if (mongoClient == null) {
-            runBlocking {
-                mongoClient = createMongoClient()
-                val database = mongoClient!!.getDatabase(getProperty(DATABASE_PROP_NAME))
-                collection = database.getCollection(COLLECTION_NAME)
-            }
-        }
+    fun initCollection(): MongoCollection<Document> {
+        val mongoClient = createMongoClient()
+        val database = mongoClient.getDatabase(getProperty(DATABASE_PROP_NAME))
+        return database.getCollection(COLLECTION_NAME)
     }
 
     /**
