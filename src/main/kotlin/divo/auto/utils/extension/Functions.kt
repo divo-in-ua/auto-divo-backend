@@ -3,9 +3,12 @@ package divo.auto.utils.extension
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders
+import org.springframework.util.CollectionUtils
+import org.springframework.util.MultiValueMap
 import java.util.*
 import java.util.function.Function
 import java.util.stream.Collectors
+import kotlin.collections.HashMap
 
 
 /** Extract HTTP headers from an HttpServletRequest and represent them as a HttpHeaders object. */
@@ -25,4 +28,14 @@ fun HttpServletRequest.getHttpHeaders(): HttpHeaders {
                 { HttpHeaders() } // Supplier: create a new HttpHeaders instance
             )
         )
+}
+
+/** Extract HTTP headers from an HttpServletRequest and represent them as a HttpHeaders object. */
+fun HttpServletResponse.getHttpHeaders(): HttpHeaders {
+    val headerNames: Collection<String> = this.headerNames
+    val result: MultiValueMap<String, String> = CollectionUtils.toMultiValueMap(HashMap<String, List<String>>())
+    headerNames.stream().forEach { header ->
+        result[header] = getHeader(header)
+    }
+    return HttpHeaders(result)
 }
