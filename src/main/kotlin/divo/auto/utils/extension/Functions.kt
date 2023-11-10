@@ -24,7 +24,7 @@ fun HttpServletRequest.getHttpHeaders(): HttpHeaders {
                         this.getHeaders(header)
                     )
                 },
-                { _, newValue -> newValue }, // Merge function: if there are duplicate keys, choose the new value
+                { _, newValue -> newValue }, // Merge function: if there are duplicate values, choose the new value
                 { HttpHeaders() } // Supplier: create a new HttpHeaders instance
             )
         )
@@ -32,10 +32,12 @@ fun HttpServletRequest.getHttpHeaders(): HttpHeaders {
 
 /** Extract HTTP headers from an HttpServletRequest and represent them as a HttpHeaders object. */
 fun HttpServletResponse.getHttpHeaders(): HttpHeaders {
-    val headerNames: Collection<String> = this.headerNames
-    val result: MultiValueMap<String, String> = CollectionUtils.toMultiValueMap(HashMap<String, List<String>>())
-    headerNames.stream().forEach { header ->
-        result[header] = getHeader(header)
-    }
+    val result: MultiValueMap<String, String> = this.headerNames
+        .stream()
+        .collect(
+            { CollectionUtils.toMultiValueMap(HashMap()) }, // Supplier
+            { map, header -> map[header] = listOf(getHeader(header)) }, // Accumulator
+            { map1, map2 -> map1.putAll(map2) } // Combiner
+        )
     return HttpHeaders(result)
 }

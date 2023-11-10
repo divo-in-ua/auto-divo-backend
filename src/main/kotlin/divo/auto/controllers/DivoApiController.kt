@@ -17,6 +17,7 @@ class DivoApiController(
     @GetMapping("/api", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun index(): ResponseEntity<String> {
 //        if (true) return ResponseEntity("Test Not Found Result", HttpStatus.NOT_FOUND)
-        return ResponseEntity("{\"result\":\"ok\"}", HttpStatus.OK)
+        val response = ResponseEntity("{\"result\":\"ok\"}", HttpStatus.OK)
+        return response
     }
 }
