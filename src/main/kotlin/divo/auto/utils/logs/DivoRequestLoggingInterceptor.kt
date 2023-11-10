@@ -1,6 +1,7 @@
 package divo.auto.utils.logs
 
 import divo.auto.entities.DivoLogEntityService
+import divo.auto.utils.extension.getHttpHeaders
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.Logger
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.ModelAndView
+import java.util.stream.Collectors
 
 @Component
 class DivoRequestLoggingInterceptor: HandlerInterceptor {
@@ -19,8 +21,10 @@ class DivoRequestLoggingInterceptor: HandlerInterceptor {
     private lateinit var logService: DivoLogEntityService
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        println("DivoRequestLoggingInterceptor preHandle!")
-        logger.info("DivoRequestLoggingInterceptor preHandle!")
+        val body = request.reader.lines().collect(Collectors.joining(System.lineSeparator()))
+        val headers = request.getHttpHeaders().toString()
+        val requestLog = "${request.method} ${request.requestURI} headers: $headers. body: $body"
+        logger.info("REQUEST ---->: $requestLog")
         return true
     }
 
@@ -31,8 +35,11 @@ class DivoRequestLoggingInterceptor: HandlerInterceptor {
         modelAndView: ModelAndView?
     ) {
 //        println("Sent response: ${response.status} ${ response }")
-        println("DivoRequestLoggingInterceptor postHandle!")
-        logger.info("DivoRequestLoggingInterceptor postHandle!")
+//        val contentAsByteArray = (response as ContentCachingRequestWrapper).contentAsByteArray
+//        val body = String(contentAsByteArray)
+        response.headerNames
+        val responseLog = "RESPONSE <----: ${response.status}"
+        logger.info(responseLog)
         // This method is called after the request has been handled by the controller
     }
 }
