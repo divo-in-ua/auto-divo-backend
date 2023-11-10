@@ -23,6 +23,7 @@ class DivoLogAppenderTest {
     private lateinit var documentCaptor: ArgumentCaptor<Document>
 
     private val testMessage = "Log message"
+    private val loggerName = DivoLogAppenderTest::class.java.name
 
     @BeforeEach
     fun setUp() {
@@ -40,7 +41,8 @@ class DivoLogAppenderTest {
         val capturedDocument = documentCaptor.value
         assertEquals(Level.INFO.levelStr, capturedDocument.getString("level"))
         assertEquals(testMessage, capturedDocument.getString("message"))
-        assertTrue(capturedDocument.getLong("createdAt") > 0)
+        assertTrue(capturedDocument.getDate("createdAt") != null)
+        assertEquals(loggerName, capturedDocument.getString("loggerName"))
     }
 
     @Test
@@ -50,7 +52,6 @@ class DivoLogAppenderTest {
         assertNotNull(collection)
         assertEquals(DivoLogAppender.getCollectionName(), collection.namespace.collectionName)
     }
-
 
     // Implement the mocked object of ILoggingEvent
     private fun createMockLoggingEvent(
@@ -62,6 +63,7 @@ class DivoLogAppenderTest {
         `when`(loggingEvent.level).thenReturn(level)
         `when`(loggingEvent.formattedMessage).thenReturn(formattedMessage)
         `when`(loggingEvent.timeStamp).thenReturn(timeStamp)
+        `when`(loggingEvent.loggerName).thenReturn(loggerName)
         return loggingEvent
     }
 }

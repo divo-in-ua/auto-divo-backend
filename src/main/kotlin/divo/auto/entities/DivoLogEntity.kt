@@ -14,6 +14,7 @@ import java.util.Date
 data class DivoLogEntity(
     @Id
     override var id: String? = null,
+    override var loggerName: String? = null,
     override var level: String? = null,
     override var message: String? = null,
     @CreatedDate
@@ -24,6 +25,9 @@ data class DivoLogEntity(
         val document = org.bson.Document()
         if (id != null) {
             document.append("id", id)
+        }
+        if (loggerName != null) {
+            document.append("loggerName", loggerName)
         }
         if (level != null) {
             document.append("level", level)

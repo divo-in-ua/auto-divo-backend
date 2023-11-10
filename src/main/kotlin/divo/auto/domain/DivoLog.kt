@@ -9,6 +9,7 @@ import java.util.*
  */
 interface DivoLog: DivoDomainModel {
     var id: String?
+    var loggerName: String?
     var level: String?
     var message: String?
     var createdAt: Date?

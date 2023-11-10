@@ -85,7 +85,8 @@ class DivoLogAppender: AppenderBase<ILoggingEvent>() {
         val logData: Document = DivoLogEntity(
             level = event.level.toString(),
             message = event.formattedMessage,
-            createdAt = Date(event.timeStamp)
+            createdAt = Date(event.timeStamp),
+            loggerName = event.loggerName,
         ).convertToDocument()
         collection?.insertOne(logData)
     }
