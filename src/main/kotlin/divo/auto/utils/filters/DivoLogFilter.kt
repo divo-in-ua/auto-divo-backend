@@ -24,8 +24,7 @@ class DivoLogFilter: Filter {
         val wrappedResponse = ContentCachingResponseWrapper(response as HttpServletResponse)
         chain?.doFilter(wrappedRequest, wrappedResponse)
         wrappedResponse.copyBodyToResponse()
-//        wrappedResponse.copyBodyToResponse()
-//        logResponse(wrappedResponse)
+        logResponse(wrappedResponse)
     }
 
     private fun logResponse(response: ContentCachingResponseWrapper) {
