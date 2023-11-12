@@ -31,10 +31,14 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web:3.1.5")
+    implementation("org.springframework.boot:spring-boot-starter-security:3.1.5")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.3")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.20")
-    developmentOnly("org.springframework.boot:spring-boot-devtools:3.1.5")
-    testImplementation("org.springframework.boot:spring-boot-starter-test:3.1.5")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb:3.1.5")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("io.jsonwebtoken:jjwt-api:0.12.3")
+    implementation("io.jsonwebtoken:jjwt-impl:0.12.3")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.12.3")
+    developmentOnly("org.springframework.boot:spring-boot-devtools:3.1.5")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:3.1.5")
 }

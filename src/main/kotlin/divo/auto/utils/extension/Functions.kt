@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.util.CollectionUtils
 import org.springframework.util.MultiValueMap
+import org.springframework.web.util.ContentCachingRequestWrapper
 import java.util.*
 import java.util.function.Function
 import java.util.stream.Collectors
@@ -40,4 +41,14 @@ fun HttpServletResponse.getHttpHeaders(): HttpHeaders {
             { map1, map2 -> map1.putAll(map2) } // Combiner
         )
     return HttpHeaders(result)
+}
+
+/** Wrap request if not wrapped yet and get a body from an input stream */
+fun HttpServletRequest.getBody(): String {
+    val contentCachingRequestWrapper = if (this is ContentCachingRequestWrapper) {
+        this
+    } else {
+        ContentCachingRequestWrapper(this)
+    }
+    return contentCachingRequestWrapper.inputStream.bufferedReader().use { it.readText() }
 }

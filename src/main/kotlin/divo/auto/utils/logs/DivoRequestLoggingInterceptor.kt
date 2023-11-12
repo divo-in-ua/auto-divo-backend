@@ -1,5 +1,6 @@
 package divo.auto.utils.logs
 
+import divo.auto.utils.extension.getBody
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.Logger
@@ -13,13 +14,8 @@ class DivoRequestLoggingInterceptor: HandlerInterceptor {
     val logger: Logger = LoggerFactory.getLogger(this@DivoRequestLoggingInterceptor.javaClass)
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        // if needed you can get also it:
-        // val headers = request.getHttpHeaders().toString()
-
-        val body = request.inputStream.bufferedReader().use { it.readText() }
-        val requestLog = "${request.method} ${request.requestURI} body: $body"
+        val requestLog = "${request.method} ${request.requestURI} body: ${request.getBody()}"
         logger.info("REQUEST ---->: $requestLog")
-
         return true
     }
 }
